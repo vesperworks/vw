@@ -4,7 +4,7 @@ package vw.ui {
 
 	public class FrameBtnAnimation {
 
-		public static function setup(target:MovieClip):void {
+		public static function setup(target:MovieClip):MovieClip {
 			
 			target.addEventListener(MouseEvent.MOUSE_DOWN, _down);
 			target.addEventListener(MouseEvent.MOUSE_UP, _up);
@@ -15,6 +15,8 @@ package vw.ui {
 			active(target);
 			
 			target.gotoAndStop(1);
+			
+			return target;
 		}
 
 		public static function clear(target:MovieClip):void {
