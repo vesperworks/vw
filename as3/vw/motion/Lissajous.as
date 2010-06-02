@@ -24,6 +24,7 @@ package vw.motion {
 		private var sp:DisplayObject;
 
 		public function Lissajous(target:DisplayObject,radius:Number = 20,speed:Number = 1,nA:Number = 2,nB:Number = 3) {
+			nTime = Math.random();
 			sp = target;
 			step = speed;
 			//			sp.x = xPos;

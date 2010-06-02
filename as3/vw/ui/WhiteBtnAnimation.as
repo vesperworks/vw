@@ -1,18 +1,25 @@
 package vw.ui {
-	import flash.geom.Rectangle;
+	import caurina.transitions.Equations;
+	import caurina.transitions.Tweener;
+	import caurina.transitions.properties.ColorShortcuts;
+
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
+	import flash.geom.Rectangle;
 
-	public class FrameBtnAnimation {
-
+	public class WhiteBtnAnimation {
+		
 		public static function setup(target:MovieClip):MovieClip {
+			
+			ColorShortcuts.init();
+			
 			target.addEventListener(MouseEvent.MOUSE_DOWN, _down);
 			target.addEventListener(MouseEvent.MOUSE_UP, _up);
 			target.addEventListener(MouseEvent.ROLL_OUT, _out);
 			target.addEventListener(MouseEvent.ROLL_OVER, _over);
 			
 			var area:Rectangle = target.getRect(target);
-			with(target){
+			with(target) {
 				graphics.beginFill(0x000000, 0);
 				graphics.drawRect(area.x, area.y, area.width, area.height);
 				graphics.endFill();
@@ -46,21 +53,19 @@ package vw.ui {
 		}
 
 		private static function _up(e:MouseEvent):void {
-			e.currentTarget.gotoAndPlay("_up");
 		}
 
 		private static function _down(e:MouseEvent):void {
-			e.currentTarget.gotoAndPlay("_down");
 		}
 
 		private static function _out(e:MouseEvent):void {
 			if (e.currentTarget.mouseEnabled) {
-				e.currentTarget.gotoAndPlay("_out");
+				Tweener.addTween(e.currentTarget, {_tintBrightness:0, time:0.5, delay:0, transition:Equations.easeOutExpo, useFrames:false});
 			}
 		}
 
 		private static function _over(e:MouseEvent):void {
-			e.currentTarget.gotoAndPlay("_over");
+			Tweener.addTween(e.currentTarget, {_tintBrightness:.75, time:0.5, delay:0, transition:Equations.easeOutExpo, useFrames:false});
 		}
 	}
 }
