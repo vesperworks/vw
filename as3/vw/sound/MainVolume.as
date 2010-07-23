@@ -1,4 +1,5 @@
 package vw.sound {
+	import flash.events.EventDispatcher;
 	import flash.display.MovieClip;
 
 	import org.libspark.betweenas3.tweens.IObjectTween;
@@ -14,27 +15,40 @@ package vw.sound {
 	/**
 	 * @author Takashi Murai (KAYAC)
 	 */
-	public class MainVolume {
+	public class MainVolume extends EventDispatcher {
 
 		private static var soundToggle:Toggle;
 		private static var tmp:Object = {vol:1};
 		private static var tween:IObjectTween;
 		private static var btnz:Array = [];
+		private static var __instance:MainVolume;
+		public static const ON:String = "MainVolumeON";
+		public static const OFF:String = "MainVolumeOFF";
 		{
 		soundToggle = new Toggle(true);
 		soundToggle.addEventListener(Toggle.ON, function(e:Event):void {
 			tween.play();
 			update(true);
+			instance.dispatchEvent(new Event(ON));
 		});
 		soundToggle.addEventListener(Toggle.OFF, function(e:Event):void {
 			BetweenAS3.reverse(tween).play();
 			update(false);
+			instance.dispatchEvent(new Event(OFF));
 		});
-				
+					
 		tween = BetweenAS3.tween(tmp, {vol:1}, {vol:0}, 1.0);
 		tween.onUpdate = function():void {
 			MainVolume.volume(tmp.vol);
 		};
+		}
+
+		/**
+		 * @return singleton instance of MainVolume
+		 */
+		public static function get instance():MainVolume {
+			if (__instance == null) __instance = new MainVolume;
+			return __instance;
 		}
 
 		public static function addBtn(btn:MovieClip):void {
@@ -58,6 +72,14 @@ package vw.sound {
 
 		public static function volume(volumeRatio:Number):void {
 			SoundMixer.soundTransform = new SoundTransform(volumeRatio);
+		}
+		
+		public static function maxVolume(volumeRatio:Number):void{
+			MainVolume.volume(volumeRatio);
+			tween = BetweenAS3.tween(tmp, {vol:volumeRatio}, {vol:0}, 1.0);
+			tween.onUpdate = function():void {
+				MainVolume.volume(tmp.vol);
+			};
 		}
 
 		public static function mute():void {
