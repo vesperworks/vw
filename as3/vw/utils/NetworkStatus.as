@@ -11,6 +11,11 @@ package vw.utils {
 	 * @author Takashi Murai (KAYAC)
 	 */
 	 
+	 //usage
+	 //NetworkStatus.instance.addEventListener(NetworkStatus.ONLINE,online);
+	 //NetworkStatus.instance.addEventListener(NetworkStatus.OFFLINE, offline);
+	 //NetworkStatus.instance.init();
+	 
 	public class NetworkStatus extends EventDispatcher {
 
 		private static var __instance:NetworkStatus;
