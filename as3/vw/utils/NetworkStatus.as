@@ -1,4 +1,5 @@
 package vw.utils {
+	import flash.events.SecurityErrorEvent;
 	import flash.events.IOErrorEvent;
 	import flash.events.Event;
 	import flash.net.URLRequest;
@@ -21,11 +22,11 @@ package vw.utils {
 		private static var __instance:NetworkStatus;
 		public static const ONLINE:String = "ONLINE";
 		public static const OFFLINE:String = "OFFLINE";
-		private var status:Boolean = false;
+		private var status:Boolean = true;
 		private var timer:Timer;
 		private var checkingFileURL:String;
 		private var loader:URLLoader;
-		private var history:Boolean;
+		private var history:Boolean = true;
 
 		/**
 		 * @return singleton instance of NetworkStatus
@@ -46,18 +47,20 @@ package vw.utils {
 		public function NetworkStatus() {
 		}
 
-		public function init(checkingFilePath:String = "http://www.kayac.com/") {
+		public function init(checkingFilePath:String = "http://www.kayac.com/"):void {
 			timer = new Timer(5000);
 			timer.addEventListener(TimerEvent.TIMER, connect);
 			checkingFileURL = checkingFilePath;
+			connect();
 			timer.start();
 		}
 
-		private function connect(e:TimerEvent):void {
+		private function connect(e:TimerEvent=null):void {
 			if(loader)return;
-			loader = new URLLoader(new URLRequest(checkingFileURL +"?="+ String(new Date().timer) + String(Math.random() * 9999 >> 0)));
+			loader = new URLLoader();
 			loader.addEventListener(Event.COMPLETE, loaded);
 			loader.addEventListener(IOErrorEvent.IO_ERROR, error);
+			loader.load(new URLRequest(checkingFileURL +"?="+ String(new Date().time) + String(Math.random() * 9999 >> 0)));
 		}
 
 		private function error(e:IOErrorEvent):void {
