@@ -1,4 +1,5 @@
 package vw.utils {
+	import flash.system.Security;
 	import flash.events.SecurityErrorEvent;
 	import flash.events.IOErrorEvent;
 	import flash.events.Event;
@@ -59,8 +60,9 @@ package vw.utils {
 			if(loader)return;
 			loader = new URLLoader();
 			loader.addEventListener(Event.COMPLETE, loaded);
+			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, loaded);
 			loader.addEventListener(IOErrorEvent.IO_ERROR, error);
-			loader.load(new URLRequest(checkingFileURL +"?="+ String(new Date().time) + String(Math.random() * 9999 >> 0)));
+			loader.load(new URLRequest(checkingFileURL + "?q=" + String(new Date().time) + String(Math.random() * 9999 >> 0)));
 		}
 
 		private function error(e:IOErrorEvent):void {
