@@ -41,6 +41,7 @@ package vw.sound {
 		tween.onUpdate = function():void {
 			MainVolume.volume(tmp.vol);
 		};
+		
 		}
 
 		/**
@@ -72,6 +73,13 @@ package vw.sound {
 
 		public static function volume(volumeRatio:Number):void {
 			SoundMixer.soundTransform = new SoundTransform(volumeRatio);
+			if((volumeRatio>0)){
+				update(true);
+				instance.dispatchEvent(new Event(ON));
+			}else{
+				update(false);
+				instance.dispatchEvent(new Event(OFF));
+			}
 		}
 		
 		public static function maxVolume(volumeRatio:Number):void{
@@ -80,6 +88,17 @@ package vw.sound {
 			tween.onUpdate = function():void {
 				MainVolume.volume(tmp.vol);
 			};
+		}
+		
+		public static function activeSound():void {
+			trace("active");
+			soundToggle.load();			
+		}
+		
+		public static function deactiveSound():void {
+			trace("deactive");
+			soundToggle.save();
+			soundToggle.off();	
 		}
 
 		public static function mute():void {

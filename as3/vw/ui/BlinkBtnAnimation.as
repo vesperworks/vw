@@ -1,4 +1,6 @@
 package vw.ui {
+
+	import vw.sound.GeneralBtnSounds;
 	import caurina.transitions.Equations;
 	import caurina.transitions.Tweener;
 	import caurina.transitions.properties.ColorShortcuts;
@@ -9,15 +11,20 @@ package vw.ui {
 
 	public class BlinkBtnAnimation {
 
-		public static function setup(target:MovieClip):MovieClip {
-			
+		public static var BRIGHTNESS:Number = 0.75;
+
+		public static function setup(target:MovieClip, soundActive:Boolean = true):MovieClip {
+
 			ColorShortcuts.init();
-			
+
 			target.addEventListener(MouseEvent.MOUSE_DOWN, _down);
 			target.addEventListener(MouseEvent.MOUSE_UP, _up);
 			target.addEventListener(MouseEvent.ROLL_OUT, _out);
 			target.addEventListener(MouseEvent.ROLL_OVER, _over);
 			
+			if (soundActive) target.addEventListener(MouseEvent.MOUSE_DOWN, _downS);
+			if (soundActive) target.addEventListener(MouseEvent.ROLL_OVER, _overS);
+
 			var area:Rectangle = target.getRect(target);
 			with(target) {
 				graphics.beginFill(0x000000, 0);
@@ -27,17 +34,20 @@ package vw.ui {
 
 			target.mouseChildren = false;
 			active(target);
-			
-			target.gotoAndStop(1);
-			
+
+//			target.gotoAndStop(1);
+
 			return target;
 		}
 
-		public static function clear(target:MovieClip):void {
+		public static function clear(target:MovieClip, soundActive:Boolean = true):void {
 			target.removeEventListener(MouseEvent.MOUSE_DOWN, _down);
 			target.removeEventListener(MouseEvent.MOUSE_UP, _up);
 			target.removeEventListener(MouseEvent.ROLL_OUT, _out);
 			target.removeEventListener(MouseEvent.ROLL_OVER, _over);
+			
+			if (soundActive) target.removeEventListener(MouseEvent.MOUSE_DOWN, _downS);
+			if (soundActive) target.removeEventListener(MouseEvent.ROLL_OVER, _overS);
 		}
 
 		public static function active(target:MovieClip):void {
@@ -65,8 +75,16 @@ package vw.ui {
 		}
 
 		private static function _over(e:MouseEvent):void {
-			Tweener.addTween(e.currentTarget, {_tintBrightness:.75, time:0, delay:0, transition:Equations.easeOutExpo, useFrames:false});
+			Tweener.addTween(e.currentTarget, {_tintBrightness:BRIGHTNESS, time:0, delay:0, transition:Equations.easeOutExpo, useFrames:false});
 			Tweener.addTween(e.currentTarget, {_tintBrightness:0, time:0.5, delay:0, transition:Equations.easeOutExpo, useFrames:false});
+		}
+		
+		private static function _overS(e:MouseEvent):void {
+			GeneralBtnSounds.instance.over();
+		}
+
+		private static function _downS(e:MouseEvent):void {
+			GeneralBtnSounds.instance.click();
 		}
 	}
 }

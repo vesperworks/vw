@@ -1,21 +1,26 @@
 package vw.ui {
 
 	import vw.sound.GeneralBtnSounds;
+	import caurina.transitions.Equations;
+	import caurina.transitions.Tweener;
+	import caurina.transitions.properties.ColorShortcuts;
 
-	import flash.geom.Rectangle;
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
+	import flash.geom.Rectangle;
 
-	public class FrameBtnAnimation {
+	public class ColorBtnAnimation {
 
-		public static function setup(target:MovieClip, soundActive:Boolean = true):MovieClip {
+		public static var COLOR:uint = 0x000000;
+
+		public static function setup(target:MovieClip):MovieClip {
+
+			ColorShortcuts.init();
+
 			target.addEventListener(MouseEvent.MOUSE_DOWN, _down);
 			target.addEventListener(MouseEvent.MOUSE_UP, _up);
 			target.addEventListener(MouseEvent.ROLL_OUT, _out);
 			target.addEventListener(MouseEvent.ROLL_OVER, _over);
-
-			if (soundActive) target.addEventListener(MouseEvent.MOUSE_DOWN, _downS);
-			if (soundActive) target.addEventListener(MouseEvent.ROLL_OVER, _overS);
 
 			var area:Rectangle = target.getRect(target);
 			with(target) {
@@ -27,19 +32,16 @@ package vw.ui {
 			target.mouseChildren = false;
 			active(target);
 
-			// target.gotoAndStop(1);
+//			target.gotoAndStop(1);
 
 			return target;
 		}
 
-		public static function clear(target:MovieClip, soundActive:Boolean = true):void {
+		public static function clear(target:MovieClip):void {
 			target.removeEventListener(MouseEvent.MOUSE_DOWN, _down);
 			target.removeEventListener(MouseEvent.MOUSE_UP, _up);
 			target.removeEventListener(MouseEvent.ROLL_OUT, _out);
 			target.removeEventListener(MouseEvent.ROLL_OVER, _over);
-
-			if (soundActive) target.removeEventListener(MouseEvent.MOUSE_DOWN, _downS);
-			if (soundActive) target.removeEventListener(MouseEvent.ROLL_OVER, _overS);
 		}
 
 		public static function active(target:MovieClip):void {
@@ -55,29 +57,21 @@ package vw.ui {
 		}
 
 		private static function _up(e:MouseEvent):void {
-			e.currentTarget.gotoAndPlay("_up");
 		}
 
 		private static function _down(e:MouseEvent):void {
-			e.currentTarget.gotoAndPlay("_down");
+			GeneralBtnSounds.instance.click();
 		}
 
 		private static function _out(e:MouseEvent):void {
 			if (e.currentTarget.mouseEnabled) {
-				e.currentTarget.gotoAndPlay("_out");
+				Tweener.addTween(e.currentTarget, {_color:null, time:0.5, delay:0, transition:Equations.easeOutExpo, useFrames:false});
 			}
 		}
 
 		private static function _over(e:MouseEvent):void {
-			e.currentTarget.gotoAndPlay("_over");
-		}
-
-		private static function _overS(e:MouseEvent):void {
 			GeneralBtnSounds.instance.over();
-		}
-
-		private static function _downS(e:MouseEvent):void {
-			GeneralBtnSounds.instance.click();
+			Tweener.addTween(e.currentTarget, {_color:COLOR, time:0.5, delay:0, transition:Equations.easeOutExpo, useFrames:false});
 		}
 	}
 }

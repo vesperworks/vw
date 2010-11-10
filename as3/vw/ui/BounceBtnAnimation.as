@@ -10,7 +10,7 @@ package vw.ui {
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 
-	public class ScaleBtnAnimation {
+	public class BounceBtnAnimation {
 
 		public static var OVER_SCALE : Number = 1.2;
 
@@ -61,18 +61,18 @@ package vw.ui {
 		}
 
 		private static function _down(e : MouseEvent):void {
+			GeneralBtnSounds.instance.click();
 		}
 
 		private static function _out(e : MouseEvent):void {
-			GeneralBtnSounds.instance.click();
 			if (e.currentTarget.mouseEnabled) {
-				Tweener.addTween(e.currentTarget, {_scale:1, time:0.5, delay:0, transition:Equations.easeOutExpo, useFrames:false});
 			}
 		}
 
 		private static function _over(e : MouseEvent):void {
 			GeneralBtnSounds.instance.over();
-			Tweener.addTween(e.currentTarget, {_scale:OVER_SCALE, time:0.5, delay:0, transition:Equations.easeOutExpo, useFrames:false});
+			e.currentTarget.scaleX = e.currentTarget.scaleY = OVER_SCALE;
+			Tweener.addTween(e.currentTarget, {_scale:1, time:1, delay:0, transition:Equations.easeOutBack, useFrames:false});
 		}
 	}
 }

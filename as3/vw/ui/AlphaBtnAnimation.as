@@ -1,4 +1,6 @@
 package vw.ui {
+
+	import vw.sound.GeneralBtnSounds;
 	import caurina.transitions.Equations;
 	import caurina.transitions.Tweener;
 	import caurina.transitions.properties.ColorShortcuts;
@@ -28,7 +30,7 @@ package vw.ui {
 			target.mouseChildren = false;
 			active(target);
 			
-			target.gotoAndStop(1);
+//			target.gotoAndStop(1);
 			
 			return target;
 		}
@@ -56,6 +58,7 @@ package vw.ui {
 		}
 
 		private static function _down(e:MouseEvent):void {
+			GeneralBtnSounds.instance.click();
 		}
 
 		private static function _out(e:MouseEvent):void {
@@ -65,6 +68,7 @@ package vw.ui {
 		}
 
 		private static function _over(e:MouseEvent):void {
+			GeneralBtnSounds.instance.over();
 			Tweener.addTween(e.currentTarget, {alpha:1, time:0.5, delay:0, transition:Equations.easeOutExpo, useFrames:false});
 		}
 	}
