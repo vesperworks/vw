@@ -65,6 +65,13 @@ package vw.utils {
 			str = str.replace(/\r\n/g, "");
 			return str;
 		}
+		
+		public static function integrateCRLF(str:String):String {
+			str = str.replace(/\r\n/g, "\r");
+			str = str.replace(/\n/g, "\r");
+			
+			return str;
+		}
 
 	}
 }

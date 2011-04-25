@@ -20,7 +20,7 @@ package vw.preloader {
 		private var per:Number = 0;
 		private var tf:TextField;
 
-		public function ArcLoading(swfPath:String, context:LoaderContext = new LoaderContext()) {
+		public function CircleLoading(swfPath:String, context:LoaderContext = new LoaderContext()) {
 			PATH = swfPath;
 			CONTEXT = context;
 			if( !stage )
@@ -51,7 +51,18 @@ package vw.preloader {
 			tf.x = arcB.x - (tf.textWidth * 0.5 | 0);
 			tf.y = arcB.y - (tf.textHeight * 0.5 | 0);
 
-			BetweenAS3.serial(BetweenAS3.parallel(BetweenAS3.addChild(arcB, this), BetweenAS3.addChild(arcA, this)), BetweenAS3.parallel(BetweenAS3.tween(arcB, {scaleX:1, scaleY:1}, {scaleX:0, scaleY:0}, 0.4, Back.easeOut)), BetweenAS3.addChild(tf, this), BetweenAS3.tween(tf, {alpha:1}, {alpha:0}, 0.3), BetweenAS3.func(tweenArc)
+			BetweenAS3.serial(
+				BetweenAS3.parallel(
+					BetweenAS3.addChild(arcB, this), 
+					BetweenAS3.addChild(arcA, this)
+				), 
+				BetweenAS3.parallel(
+					BetweenAS3.tween(arcB, {scaleX:1, scaleY:1}, {scaleX:0, scaleY:0}, 0.4, Back.easeOut)
+				), 
+				BetweenAS3.addChild(tf, this), 
+				BetweenAS3.tween(tf, {alpha:1}, {alpha:0}, 0.3), 
+				BetweenAS3.func(tweenArc)
+			);
 		}
 
 		private function onOpen(e:Event):void {

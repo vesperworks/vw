@@ -1,4 +1,6 @@
 package vw.sound {
+
+	import org.libspark.betweenas3.tweens.ITween;
 	import flash.events.EventDispatcher;
 	import flash.display.MovieClip;
 
@@ -24,24 +26,44 @@ package vw.sound {
 		private static var __instance:MainVolume;
 		public static const ON:String = "MainVolumeON";
 		public static const OFF:String = "MainVolumeOFF";
-		{
-		soundToggle = new Toggle(true);
-		soundToggle.addEventListener(Toggle.ON, function(e:Event):void {
-			tween.play();
-			update(true);
-			instance.dispatchEvent(new Event(ON));
-		});
-		soundToggle.addEventListener(Toggle.OFF, function(e:Event):void {
-			BetweenAS3.reverse(tween).play();
-			update(false);
-			instance.dispatchEvent(new Event(OFF));
-		});
-					
-		tween = BetweenAS3.tween(tmp, {vol:1}, {vol:0}, 1.0);
-		tween.onUpdate = function():void {
-			MainVolume.volume(tmp.vol);
-		};
+		private static var rtween:ITween;
+		private static var active:Boolean = true;
 		
+		{
+			soundToggle = new Toggle(true);
+			soundToggle.addEventListener(Toggle.ON, function(e:Event):void {
+				tween.stop();
+				rtween.stop();
+				update(true);
+				trace("MainVolume:on");
+				instance.dispatchEvent(new Event(ON));
+				if(tween.duration>0){
+					tween.play();
+				}else{
+					MainVolume.masterVolume(1);
+				}
+			});
+			soundToggle.addEventListener(Toggle.OFF, function(e:Event):void {
+				tween.stop();
+				rtween.stop();
+				update(false);
+				trace("MainVolume:off");
+				instance.dispatchEvent(new Event(OFF));
+				if(tween.duration>0){
+					rtween.play();
+				}else{
+					MainVolume.masterVolume(0);
+				}
+			});
+			resetTween(1);	
+		}
+		
+		private static function resetTween(n:Number):void {
+			tween = BetweenAS3.tween(tmp, {vol:1}, {vol:0}, n);
+			tween.onUpdate = function():void {
+				MainVolume.masterVolume(tmp.vol);
+			};
+			rtween = BetweenAS3.reverse(tween);
 		}
 
 		/**
@@ -72,7 +94,7 @@ package vw.sound {
 		}
 
 		public static function volume(volumeRatio:Number):void {
-			SoundMixer.soundTransform = new SoundTransform(volumeRatio);
+			masterVolume(volumeRatio);
 			if((volumeRatio>0)){
 				update(true);
 				instance.dispatchEvent(new Event(ON));
@@ -82,23 +104,29 @@ package vw.sound {
 			}
 		}
 		
+		private static function masterVolume(volumeRatio:Number):void{
+			SoundMixer.soundTransform = new SoundTransform(volumeRatio);
+		}
+		
 		public static function maxVolume(volumeRatio:Number):void{
 			MainVolume.volume(volumeRatio);
 			tween = BetweenAS3.tween(tmp, {vol:volumeRatio}, {vol:0}, 1.0);
 			tween.onUpdate = function():void {
-				MainVolume.volume(tmp.vol);
+				MainVolume.masterVolume(tmp.vol);
 			};
 		}
 		
 		public static function activeSound():void {
-			trace("active");
+			if(active)return;
+			active=true;
 			soundToggle.load();			
 		}
 		
 		public static function deactiveSound():void {
-			trace("deactive");
+			if(!active)return;
+			active=false;
 			soundToggle.save();
-			soundToggle.off();	
+			soundToggle.off();
 		}
 
 		public static function mute():void {
@@ -111,6 +139,10 @@ package vw.sound {
 
 		public static function toggle():void {
 			soundToggle.toggle();
+		}
+
+		static public function set duration(n:Number):void {
+			resetTween(n);
 		}
 	}
 }

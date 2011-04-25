@@ -8,9 +8,10 @@ package vw.ui {
 
 	public class FrameBtnAnimation {
 
-		public static function setup(target:MovieClip, soundActive:Boolean = true):MovieClip {
-			target.addEventListener(MouseEvent.MOUSE_DOWN, _down);
-			target.addEventListener(MouseEvent.MOUSE_UP, _up);
+		public static function setup(target:MovieClip, soundActive:Boolean = true, isClickMode:Boolean = false):MovieClip {
+			if (!isClickMode) target.addEventListener(MouseEvent.MOUSE_DOWN, _down);
+			if (!isClickMode) target.addEventListener(MouseEvent.MOUSE_UP, _up);
+			if (isClickMode) target.addEventListener(MouseEvent.CLICK, _down);
 			target.addEventListener(MouseEvent.ROLL_OUT, _out);
 			target.addEventListener(MouseEvent.ROLL_OVER, _over);
 
@@ -28,13 +29,14 @@ package vw.ui {
 			active(target);
 
 			// target.gotoAndStop(1);
-
+			
 			return target;
 		}
 
-		public static function clear(target:MovieClip, soundActive:Boolean = true):void {
-			target.removeEventListener(MouseEvent.MOUSE_DOWN, _down);
-			target.removeEventListener(MouseEvent.MOUSE_UP, _up);
+		public static function clear(target:MovieClip, soundActive:Boolean = true, isClickMode:Boolean = false):void {
+			if (!isClickMode) target.removeEventListener(MouseEvent.MOUSE_DOWN, _down);
+			if (!isClickMode) target.removeEventListener(MouseEvent.MOUSE_UP, _up);
+			if (isClickMode) target.removeEventListener(MouseEvent.CLICK, _down);
 			target.removeEventListener(MouseEvent.ROLL_OUT, _out);
 			target.removeEventListener(MouseEvent.ROLL_OVER, _over);
 

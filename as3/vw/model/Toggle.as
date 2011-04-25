@@ -42,12 +42,13 @@ package vw.model {
 			if (_status != history) {
 				var nextEvent:String = _status ? ON : OFF;
 				dispatchEvent(new Event(nextEvent));
+				history = _status;
 			}
-			history = _status;
 		}
 
 		public function save():void {
 			memory = _status;
+			history = _status;
 		}
 
 		public function load():void {
